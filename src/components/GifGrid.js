@@ -1,28 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getGifts } from "../helpers/getGifts";
+import { GifGridItem } from "./GifGridItem";
 
 export const GifGrid = ({ category }) => {
-  const getGifts = async () => {
-    const url =
-      "https://api.giphy.com/v1/gifs/search?q=spiderman&limit=10&api_key=OlTRLiAALlGDUP0RhT4ZrgpqXU0a7UwG";
-    const resp = await fetch(url);
-    const { data } = await resp.json();
-
-    const gifts = data.map((img) => {
-      return {
-        id: img.id,
-        title: img.title,
-        url: img.images?.downsized_medium.url,
-      };
-    });
-
-    console.log(gifts);
-  };
-
-  getGifts();
+  const [images, setimages] = useState([]);
+  useEffect(() => {
+    getGifts(category).then(setimages);
+  }, [category]);
 
   return (
-    <div>
+    <>
       <h3>{category}</h3>
-    </div>
+      <div className="card-grid">
+        {images.map((img) => (
+          <GifGridItem key={img.id} {...img} />
+        ))}
+      </div>
+    </>
   );
 };
